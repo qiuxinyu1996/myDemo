@@ -1,4 +1,4 @@
-package com.qiuxinyu.entity;
+package com.qiuxinyu.entity.relationship;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("user")
-public class User {
+@TableName("user_role")
+public class UserRole {
     @TableId("id")
     private String id;
-    @TableField("username")
-    private String username;
-    @TableField("password")
-    private String password;
+    @TableField("user_id")
+    private String userId;
+    @TableField("role_id")
+    private String roleId;
 }

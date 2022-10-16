@@ -2,6 +2,8 @@ package com.qiuxinyu.shiro;
 
 import com.qiuxinyu.entity.Role;
 import com.qiuxinyu.entity.User;
+import com.qiuxinyu.service.PermService;
+import com.qiuxinyu.service.RoleService;
 import com.qiuxinyu.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
@@ -12,6 +14,7 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +29,12 @@ public class MyRealm extends AuthorizingRealm {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private PermService permService;
+
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
@@ -35,13 +44,11 @@ public class MyRealm extends AuthorizingRealm {
 
         // 添加角色权限
         List<String> roles = new ArrayList<>();
-        userService.getRolesByUsername(username).forEach(role -> roles.add(role.getRole()));
-        authorizationInfo.addRoles(roles);
+        authorizationInfo.addRoles(roleService.getRolesByUsername(username));
 
         // 添加资源权限
         List<String> perms = new ArrayList<>();
-        userService.getPermsByUsername(username).forEach(perm -> perms.add(perm.getPerm()));
-        authorizationInfo.addStringPermissions(perms);
+        authorizationInfo.addStringPermissions(permService.getPermsByUsername(username));
 
         log.info("{} ---> {} ---> {}", username, roles, perms);
         return authorizationInfo;
@@ -59,6 +66,7 @@ public class MyRealm extends AuthorizingRealm {
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
                 authenticationToken.getPrincipal(),
                 user.getPassword(),
+                ByteSource.Util.bytes(SALT),
                 username);
 
         return authenticationInfo;

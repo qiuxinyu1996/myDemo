@@ -1,38 +1,40 @@
 package com.qiuxinyu.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.qiuxinyu.entity.User;
+import com.qiuxinyu.service.UserService;
+import com.qiuxinyu.util.Md5Util;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/user")
 @Slf4j
 public class UserController {
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/login")
     public String login(@RequestBody User user) {
-        Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword());
-        try {
-            subject.login(token);
-            log.info("login success");
-            return "success";
-        } catch (Exception e) {
-            log.error("login fail");
-            return "fail";
-        }
+        return userService.login(user);
     }
 
     @PostMapping("/logout")
     public String logout() {
-        Subject subject = SecurityUtils.getSubject();
-        subject.logout();
-        log.info("logout success");
-        return "success";
+        return userService.logout();
+    }
+
+    @PostMapping("/register")
+    public String register(@RequestBody User user) {
+        return userService.register(user);
     }
 }

@@ -1,5 +1,6 @@
 package com.qiuxinyu.shiro;
 
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -19,6 +20,13 @@ public class ShiroConfig {
     @Bean
     public DefaultWebSecurityManager securityManager(MyRealm myRealm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+
+        // 设置md5加密
+        HashedCredentialsMatcher matcher = new HashedCredentialsMatcher();
+        matcher.setHashAlgorithmName("md5");
+        matcher.setHashIterations(1024);
+        myRealm.setCredentialsMatcher(matcher);
+
         securityManager.setRealm(myRealm);
         return securityManager;
     }

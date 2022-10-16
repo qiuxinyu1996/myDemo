@@ -9,5 +9,5 @@ import java.util.List;
 
 @Mapper
 public interface RoleMapper extends BaseMapper<Role> {
-    List<Perm> getPermsByRole(String role);
+//    List<Perm> getPermsByRole(String role);
 }

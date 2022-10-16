@@ -7,5 +7,7 @@ import com.qiuxinyu.entity.Role;
 import java.util.List;
 
 public interface RoleService extends IService<Role> {
-    List<Perm> getPermsByRole(String role);
+    Role getRoleByRoleName(String roleName);
+
+    List<String> getRolesByUsername(String username);
 }
