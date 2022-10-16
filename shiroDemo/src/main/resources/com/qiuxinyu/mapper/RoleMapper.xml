@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiuxinyu.mapper.RoleMapper">
+    <select id="getPermsByRole" resultType="com.qiuxinyu.entity.Perm" parameterType="string">
+        select perm.id,perm.perm from role
+        join role_perm on role.role = #{role} and role.id = role_perm.roleId
+        join perm on role_perm.permId = perm.id
+    </select>
+</mapper>

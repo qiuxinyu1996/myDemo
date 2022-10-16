@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiuxinyu.mapper.UserMapper">
+    <select id="getRolesByUsername" resultType="com.qiuxinyu.entity.Role" parameterType="string">
+        select role.id,role.role from user
+        join user_role on user.username = #{username} and user.id = user_role.userId
+        join role on user_role.roleId = role.id
+    </select>
+</mapper>

@@ -1,6 +1,7 @@
 package com.qiuxinyu.controller;
 
 import com.qiuxinyu.util.RandomUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,8 +17,9 @@ import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api/mail")
+@Slf4j
 public class MailController {
-    public static final int REDIS_TIME_OUT = 30;
+    public static final int CODE_TIME_OUT = 30;
     @Autowired
     private JavaMailSender sender;
     @Autowired
@@ -36,10 +38,11 @@ public class MailController {
             message.setText("您的验证码是：" + code + ",30分钟内有效");
             sender.send(message);
             //  将验证码存入redis，用于校验
-            redisTemplate.opsForValue().set(email, code, REDIS_TIME_OUT, TimeUnit.SECONDS);
+            redisTemplate.opsForValue().set(email, code, CODE_TIME_OUT, TimeUnit.SECONDS);
             return "success";
         } catch (MailException e) {
-            return "error";
+            log.error("send email fail");
+            return "fail";
         }
     }
 }
