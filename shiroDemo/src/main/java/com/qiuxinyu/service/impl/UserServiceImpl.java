@@ -26,12 +26,6 @@ public class UserServiceImpl extends ServiceImpl<BaseMapper<User>, User> impleme
     @Autowired
     private UserMapper userMapper;
 
-    @Autowired
-    private RoleService roleService;
-
-    @Autowired
-    private PermService permService;
-
     @Override
     public String login(@RequestBody User user) {
         Subject subject = SecurityUtils.getSubject();
@@ -39,9 +33,6 @@ public class UserServiceImpl extends ServiceImpl<BaseMapper<User>, User> impleme
         try {
             subject.login(token);
             log.info("login success");
-            log.info("{} ---> {} ---> {}", user.getUsername(),
-                    roleService.getRolesByUsername(user.getUsername()),
-                    permService.getPermsByUsername(user.getUsername()));
             return "login success";
         } catch (Exception e) {
             log.error("login fail");
