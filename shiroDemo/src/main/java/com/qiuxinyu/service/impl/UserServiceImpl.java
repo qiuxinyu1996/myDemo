@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qiuxinyu.entity.User;
 import com.qiuxinyu.mapper.UserMapper;
+import com.qiuxinyu.service.PermService;
+import com.qiuxinyu.service.RoleService;
 import com.qiuxinyu.service.UserService;
 import com.qiuxinyu.util.Md5Util;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,12 @@ public class UserServiceImpl extends ServiceImpl<BaseMapper<User>, User> impleme
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private PermService permService;
+
     @Override
     public String login(@RequestBody User user) {
         Subject subject = SecurityUtils.getSubject();
@@ -31,10 +39,13 @@ public class UserServiceImpl extends ServiceImpl<BaseMapper<User>, User> impleme
         try {
             subject.login(token);
             log.info("login success");
-            return "success";
+            log.info("{} ---> {} ---> {}", user.getUsername(),
+                    roleService.getRolesByUsername(user.getUsername()),
+                    permService.getPermsByUsername(user.getUsername()));
+            return "login success";
         } catch (Exception e) {
             log.error("login fail");
-            return "fail";
+            return "login fail";
         }
     }
 
@@ -43,7 +54,7 @@ public class UserServiceImpl extends ServiceImpl<BaseMapper<User>, User> impleme
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
         log.info("logout success");
-        return "success";
+        return "logout success";
     }
 
     @Override
@@ -68,7 +79,6 @@ public class UserServiceImpl extends ServiceImpl<BaseMapper<User>, User> impleme
     public User getUserByUsername(String username) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUsername, username);
-
         return userMapper.selectOne(queryWrapper);
     }
 }

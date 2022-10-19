@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 public class Perm {
     @TableId("id")
     private String id;
-    @TableField("perm")
-    private String perm;
+    @TableField("perm_name")
+    private String permName;
 }
 
 

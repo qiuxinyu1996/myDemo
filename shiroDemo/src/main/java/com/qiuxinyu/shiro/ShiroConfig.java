@@ -44,6 +44,8 @@ public class ShiroConfig {
         filterMap.put("/api/user/add", "perms[user:add]");
         filterMap.put("/api/user/delete", "perms[user:delete]");
         filterMap.put("/api/user/update", "perms[user:update]");
+        filterMap.put("/api/user/sleep", "perms[sleep]");
+        filterMap.put("/api/user/run", "perms[run]");
         // 需要认证
         filterMap.put("/api/user/index", "authc");
         // 无需认证

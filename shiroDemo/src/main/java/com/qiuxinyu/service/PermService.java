@@ -11,4 +11,6 @@ public interface PermService extends IService<Perm> {
     List<String> getPermsByRoleName(String roleName);
 
     List<String> getPermsByUsername(String username);
+
+    String createPerm(String permName);
 }

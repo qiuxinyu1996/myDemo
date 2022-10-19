@@ -43,14 +43,14 @@ public class MyRealm extends AuthorizingRealm {
         String username = principalCollection.asList().get(0).toString();
 
         // 添加角色权限
-        List<String> roles = new ArrayList<>();
+//        List<String> roles = new ArrayList<>();
         authorizationInfo.addRoles(roleService.getRolesByUsername(username));
 
         // 添加资源权限
-        List<String> perms = new ArrayList<>();
+//        List<String> perms = new ArrayList<>();
         authorizationInfo.addStringPermissions(permService.getPermsByUsername(username));
 
-        log.info("{} ---> {} ---> {}", username, roles, perms);
+//        log.info("{} ---> {} ---> {}", username, roles, perms);
         return authorizationInfo;
     }
 

@@ -1,8 +1,6 @@
 package com.qiuxinyu.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.qiuxinyu.entity.Perm;
-import com.qiuxinyu.entity.Role;
 import com.qiuxinyu.entity.User;
 
 import java.util.List;

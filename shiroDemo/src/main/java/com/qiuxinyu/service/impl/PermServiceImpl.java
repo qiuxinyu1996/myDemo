@@ -7,16 +7,14 @@ import com.qiuxinyu.entity.Perm;
 import com.qiuxinyu.entity.Role;
 import com.qiuxinyu.entity.relationship.RolePerm;
 import com.qiuxinyu.mapper.PermMapper;
+import com.qiuxinyu.mapper.RolePermMapper;
 import com.qiuxinyu.service.PermService;
 import com.qiuxinyu.service.RolePermService;
 import com.qiuxinyu.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class PermServiceImpl extends ServiceImpl<BaseMapper<Perm>, Perm> implements PermService {
@@ -27,12 +25,12 @@ public class PermServiceImpl extends ServiceImpl<BaseMapper<Perm>, Perm> impleme
     private RoleService roleService;
 
     @Autowired
-    private RolePermService rolePermService;
+    private RolePermMapper rolePermMapper;
 
     @Override
     public Perm getPermByPermName(String permName) {
         LambdaQueryWrapper<Perm> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Perm::getPerm, permName);
+        queryWrapper.eq(Perm::getPermName, permName);
 
         return permMapper.selectOne(queryWrapper);
     }
@@ -46,7 +44,7 @@ public class PermServiceImpl extends ServiceImpl<BaseMapper<Perm>, Perm> impleme
         List<String> permIds = new ArrayList<>();
         LambdaQueryWrapper<RolePerm> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(RolePerm::getRoleId, role.getId());
-        List<RolePerm> rolePerms = rolePermService.list(queryWrapper);
+        List<RolePerm> rolePerms = rolePermMapper.selectList(queryWrapper);
         for (RolePerm rolePerm : rolePerms) {
             permIds.add(rolePerm.getPermId());
         }
@@ -54,7 +52,7 @@ public class PermServiceImpl extends ServiceImpl<BaseMapper<Perm>, Perm> impleme
         // 将角色id集合转化为角色集合
         List<String> permNames = new ArrayList<>();
         for (String permId : permIds) {
-            permNames.add(permMapper.selectById(permId).getPerm());
+            permNames.add(permMapper.selectById(permId).getPermName());
         }
 
         return permNames;
@@ -75,5 +73,14 @@ public class PermServiceImpl extends ServiceImpl<BaseMapper<Perm>, Perm> impleme
         permNames.addAll(permSet);
 
         return permNames;
+    }
+
+    @Override
+    public String createPerm(String permName) {
+        Perm perm = new Perm(UUID.randomUUID().toString(), permName);
+        if (permMapper.insert(perm) > 0) {
+            return "create perm success";
+        }
+        return "create perm fail";
     }
 }

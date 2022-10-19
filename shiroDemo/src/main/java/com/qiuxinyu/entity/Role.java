@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 public class Role {
     @TableId("id")
     private String id;
-    @TableField("role")
-    private String role;
+    @TableField("role_name")
+    private String roleName;
 }
