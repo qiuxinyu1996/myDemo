@@ -1,7 +1,6 @@
 package com.qiuxinyu.shiro;
 
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -50,12 +49,9 @@ public class ShiroConfig {
         filterMap.put("/api/user/index", "authc");
         // 无需认证
         filterMap.put("/api/user/login", "anon");
-
         filterFactory.setFilterChainDefinitionMap(filterMap);
 
-        filterFactory.setLoginUrl("/login.html");
-        filterFactory.setSuccessUrl("/index.html");
-        filterFactory.setUnauthorizedUrl("/unAuth.html");
+        filterFactory.setLoginUrl("/index.html");
 
         return filterFactory;
     }

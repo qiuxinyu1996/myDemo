@@ -5,12 +5,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qiuxinyu.entity.User;
 import com.qiuxinyu.mapper.UserMapper;
-import com.qiuxinyu.service.PermService;
-import com.qiuxinyu.service.RoleService;
 import com.qiuxinyu.service.UserService;
 import com.qiuxinyu.util.Md5Util;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,23 +29,37 @@ public class UserServiceImpl extends ServiceImpl<BaseMapper<User>, User> impleme
     @Override
     public String login(@RequestBody User user) {
         Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            log.info("has logged in");
+            return "fail";
+        }
         UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword());
         try {
             subject.login(token);
-            log.info("login success");
-            return "login success";
+            log.info("login success : {}",user.getUsername());
+            return "success";
+        } catch (UnknownAccountException e) {
+            log.info("login fail,username is not exist");
+            return "fail";
+        } catch (IncorrectCredentialsException e) {
+            log.info("login fail,password is wrong");
+            return "fail";
         } catch (Exception e) {
-            log.error("login fail");
-            return "login fail";
+            log.info("unknown error");
+            return "fail";
         }
     }
 
     @Override
     public String logout() {
         Subject subject = SecurityUtils.getSubject();
+        if (!subject.isAuthenticated()) {
+            log.info("has logged out");
+            return "fail";
+        }
         subject.logout();
         log.info("logout success");
-        return "logout success";
+        return "success";
     }
 
     @Override
@@ -59,11 +73,12 @@ public class UserServiceImpl extends ServiceImpl<BaseMapper<User>, User> impleme
         try {
             userMapper.insert(entity);
         } catch (DuplicateKeyException e) {
-            log.error("duplicate key");
-            return "register fail";
+            log.info("register fail,duplicate username");
+            return "fail";
         }
 
-        return "register success";
+        log.info("register success");
+        return "success";
     }
 
 

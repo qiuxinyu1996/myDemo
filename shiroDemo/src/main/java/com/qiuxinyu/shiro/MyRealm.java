@@ -1,6 +1,5 @@
 package com.qiuxinyu.shiro;
 
-import com.qiuxinyu.entity.Role;
 import com.qiuxinyu.entity.User;
 import com.qiuxinyu.service.PermService;
 import com.qiuxinyu.service.RoleService;
@@ -17,9 +16,6 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @Slf4j
@@ -41,16 +37,11 @@ public class MyRealm extends AuthorizingRealm {
 
         // 获取当前用户
         String username = principalCollection.asList().get(0).toString();
-
         // 添加角色权限
-//        List<String> roles = new ArrayList<>();
         authorizationInfo.addRoles(roleService.getRolesByUsername(username));
-
         // 添加资源权限
-//        List<String> perms = new ArrayList<>();
         authorizationInfo.addStringPermissions(permService.getPermsByUsername(username));
 
-//        log.info("{} ---> {} ---> {}", username, roles, perms);
         return authorizationInfo;
     }
 
